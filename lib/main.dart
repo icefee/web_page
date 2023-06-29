@@ -168,20 +168,16 @@ class _Page extends State<Page> {
                                   Container(
                                     width: width,
                                     alignment: Alignment.center,
-                                    decoration: const BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: Colors.black12))),
-                                    child: TabBar(
-                                        tabAlignment: TabAlignment.center,
+                                    child: const TabBar(
                                         tabs: [
-                                          Container(
-                                            padding: const EdgeInsets.all(10),
-                                            child: const Text('简介'),
+                                          Tab(
+                                            text: '简介',
                                           ),
-                                          Container(
-                                            padding: const EdgeInsets.all(10),
-                                            child: const Text('选集'),
+                                          Tab(
+                                            text: '选集',
                                           )
-                                        ],
-                                        dividerColor: Colors.transparent),
+                                        ]
+                                    ),
                                   ),
                                   SizedBox(
                                     height: 400,

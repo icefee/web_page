@@ -89,12 +89,28 @@ class _NetworkVideoPlayer extends State<NetworkVideoPlayer> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black,
+      constraints: const BoxConstraints.expand(),
       child: Stack(
-        alignment: Alignment.center,
         children: <Widget>[
           AspectRatio(
             aspectRatio: _controller.value.aspectRatio,
             child: VideoPlayer(_controller),
+          ),
+          Offstage(
+            offstage: !(pending || _controller.value.isBuffering),
+            child: Container(
+              constraints: const BoxConstraints.expand(),
+              child: const Center(
+                child: SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                ),
+              ),
+            ),
           ),
           Offstage(
             offstage: failed,
@@ -113,22 +129,6 @@ class _NetworkVideoPlayer extends State<NetworkVideoPlayer> {
               },
             ),
           ),
-          Offstage(
-            offstage: !(pending || _controller.value.isBuffering),
-            child: Container(
-              constraints: const BoxConstraints.expand(),
-              child: const Center(
-                child: SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                ),
-              ),
-            ),
-          )
         ],
       ),
     );
@@ -254,15 +254,19 @@ class _ControlsOverlay extends State<ControlsOverlay> {
               ],
             ),
           ),
-          Align(
-            alignment: Alignment.center,
-            child: IconButton(
-                onPressed: _togglePlay,
-                icon: Icon(
-                  widget.controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                  color: Colors.white,
-                  size: 56,
-                )),
+          AnimatedOpacity(
+            opacity: controlsVisible ? 1 : 0,
+            duration: AppTheme.transitionDuration,
+            child: Align(
+              alignment: Alignment.center,
+              child: IconButton(
+                  onPressed: _togglePlay,
+                  icon: Icon(
+                    widget.controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                    color: Colors.white,
+                    size: 56,
+                  )),
+            ),
           )
         ],
       ),

@@ -6,4 +6,8 @@ abstract class AppTheme {
   static BorderRadiusGeometry borderRadius = BorderRadius.circular(4);
 
   static Duration transitionDuration = const Duration(milliseconds: 500);
+
+  static double fontSize = 16.0;
+
+  static TextStyle textStyle = TextStyle(fontSize: AppTheme.fontSize);
 }

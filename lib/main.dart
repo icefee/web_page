@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:html';
 import 'dart:math' show min;
 import './widget/player.dart';
+import './widget/toggle_button.dart';
 import './tool/theme.dart';
 import './tool/api.dart';
 
@@ -69,7 +70,7 @@ class _Page extends State<Page> {
 
     toast!.showToast(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
         decoration: BoxDecoration(color: toastColor, borderRadius: AppTheme.borderRadius),
         child: Text(text, style: const TextStyle(color: Colors.white)),
       ),
@@ -78,6 +79,7 @@ class _Page extends State<Page> {
   }
 
   void getVideoData() async {
+    await Future.delayed(const Duration(milliseconds: 200));
     Location location = window.location;
     try {
       if (location.search != null && location.search!.isNotEmpty) {
@@ -103,6 +105,21 @@ class _Page extends State<Page> {
 
   VideoSource get activeSource => videoData!.dataList.first;
 
+  Widget get loadingOverlay {
+    return Center(
+      child: Container(
+        width: 150,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.borderRadius, boxShadow: AppTheme.boxShadow),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [const CircularProgressIndicator(), Text('加载中...', style: TextStyle(fontSize: AppTheme.fontSize))],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     document.title = videoData?.name ?? '数据加载中';
@@ -112,18 +129,7 @@ class _Page extends State<Page> {
         constraints: const BoxConstraints.expand(),
         decoration: const BoxDecoration(gradient: LinearGradient(colors: [Colors.blueAccent, Colors.lightBlueAccent])),
         child: loading
-            ? Center(
-                child: Container(
-                  width: 160,
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: AppTheme.borderRadius, boxShadow: AppTheme.boxShadow),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [CircularProgressIndicator(), Text('加载中..', style: TextStyle(fontSize: 16.0))],
-                  ),
-                ),
-              )
+            ? loadingOverlay
             : LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
                 double width = min(constraints.maxWidth, 1200);
                 return Row(
@@ -193,39 +199,38 @@ class _Page extends State<Page> {
                                               ),
                                             ),
                                             Expanded(
-                                              child: Container(
-                                                padding: const EdgeInsets.only(left: 15),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(videoData!.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
-                                                    Container(
-                                                      margin: const EdgeInsets.only(bottom: 8),
-                                                      child: Text(videoData!.note, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black54)),
-                                                    ),
-                                                    Offstage(
-                                                      offstage: videoData!.subname.isEmpty,
-                                                      child: Text('又名: ${videoData!.subname}', style: const TextStyle(fontSize: 16)),
-                                                    ),
-                                                    Text('类别: ${videoData!.type}', style: const TextStyle(fontSize: 16)),
-                                                    Text('年份: ${videoData!.year}', style: const TextStyle(fontSize: 16)),
-                                                    Offstage(
-                                                      offstage: videoData!.area == null,
-                                                      child: Text('地区: ${videoData!.area}', style: const TextStyle(fontSize: 16)),
-                                                    ),
-                                                    Offstage(
-                                                      offstage: videoData!.director == null,
-                                                      child: Text('导演: ${videoData!.director}', style: const TextStyle(fontSize: 16)),
-                                                    ),
-                                                    Offstage(
-                                                      offstage: videoData!.actor == null,
-                                                      child: Text('演员: ${videoData!.actor}', style: const TextStyle(fontSize: 16)),
-                                                    ),
-                                                    Container(
-                                                      margin: const EdgeInsets.only(top: 8),
-                                                      child: Text(videoData!.des, style: const TextStyle(fontSize: 16), softWrap: true),
-                                                    )
-                                                  ],
+                                              child: SingleChildScrollView(
+                                                child: Container(
+                                                  padding: const EdgeInsets.only(left: 15),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(videoData!.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
+                                                      Container(
+                                                        margin: const EdgeInsets.only(bottom: 8),
+                                                        child: Text(videoData!.note, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.black54)),
+                                                      ),
+                                                      Offstage(
+                                                        offstage: videoData!.subname.isEmpty,
+                                                        child: Text('又名: ${videoData!.subname}', style: AppTheme.textStyle),
+                                                      ),
+                                                      Text('类别: ${videoData!.type}', style: AppTheme.textStyle),
+                                                      Text('年份: ${videoData!.year}', style: AppTheme.textStyle),
+                                                      Offstage(offstage: videoData!.area == null, child: Text('地区: ${videoData!.area}', style: AppTheme.textStyle)),
+                                                      Offstage(
+                                                        offstage: videoData!.director == null,
+                                                        child: Text('导演: ${videoData!.director}', style: AppTheme.textStyle),
+                                                      ),
+                                                      Offstage(
+                                                        offstage: videoData!.actor == null,
+                                                        child: Text('演员: ${videoData!.actor}', style: AppTheme.textStyle),
+                                                      ),
+                                                      Container(
+                                                        margin: const EdgeInsets.only(top: 8),
+                                                        child: Text(videoData!.des, style: AppTheme.textStyle, softWrap: true),
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             )
@@ -240,18 +245,14 @@ class _Page extends State<Page> {
                                               children: activeSource.urls
                                                   .asMap()
                                                   .keys
-                                                  .map((int index) => Container(
-                                                        width: constraints.maxWidth / (constraints.maxWidth / 120).floor(),
-                                                        padding: const EdgeInsets.all(5),
-                                                        child: TextButton(
-                                                          style: TextButton.styleFrom(backgroundColor: activeEpisode == index ? Theme.of(context).primaryColor : Colors.black12, foregroundColor: activeEpisode == index ? Colors.white : null),
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              activeEpisode = index;
-                                                            });
-                                                          },
-                                                          child: Text(activeSource.urls[index].label),
-                                                        ),
+                                                  .map((int index) => ToggleButton(
+                                                        active: activeEpisode == index,
+                                                        text: activeSource.urls[index].label,
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            activeEpisode = index;
+                                                          });
+                                                        },
                                                       ))
                                                   .toList(),
                                             );

@@ -92,10 +92,7 @@ class _NetworkVideoPlayer extends State<NetworkVideoPlayer> {
       constraints: const BoxConstraints.expand(),
       child: Stack(
         children: <Widget>[
-          AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
-          ),
+          VideoPlayer(_controller),
           Offstage(
             offstage: !(pending || _controller.value.isBuffering),
             child: Container(

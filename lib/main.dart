@@ -245,7 +245,10 @@ class _Page extends State<Page> {
                                               children: activeSource.urls
                                                   .asMap()
                                                   .keys
-                                                  .map((int index) => ToggleButton(
+                                                  .map((int index) => Container(
+                                                      width: constraints.maxWidth / (constraints.maxWidth / 120).floor(),
+                                                      padding: const EdgeInsets.all(5),
+                                                      child: ToggleButton(
                                                         active: activeEpisode == index,
                                                         text: activeSource.urls[index].label,
                                                         onPressed: () {
@@ -253,7 +256,7 @@ class _Page extends State<Page> {
                                                             activeEpisode = index;
                                                           });
                                                         },
-                                                      ))
+                                                      )))
                                                   .toList(),
                                             );
                                           },

@@ -71,8 +71,7 @@ class _Page extends State<Page> {
     toast!.showToast(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-        decoration: BoxDecoration(
-            color: toastColor, borderRadius: AppTheme.borderRadius),
+        decoration: BoxDecoration(color: toastColor, borderRadius: AppTheme.borderRadius),
         child: Text(text, style: const TextStyle(color: Colors.white)),
       ),
       gravity: ToastGravity.BOTTOM,
@@ -111,17 +110,12 @@ class _Page extends State<Page> {
       child: Container(
         width: 150,
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: AppTheme.borderRadius,
-            boxShadow: AppTheme.boxShadow),
+        decoration:
+            BoxDecoration(color: Colors.white, borderRadius: AppTheme.borderRadius, boxShadow: AppTheme.boxShadow),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const CircularProgressIndicator(),
-            Text('加载中...', style: TextStyle(fontSize: AppTheme.fontSize))
-          ],
+          children: [const CircularProgressIndicator(), Text('加载中...', style: TextStyle(fontSize: AppTheme.fontSize))],
         ),
       ),
     );
@@ -134,13 +128,10 @@ class _Page extends State<Page> {
     return Scaffold(
       body: Container(
         constraints: const BoxConstraints.expand(),
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Colors.blueAccent, Colors.lightBlueAccent])),
+        decoration: const BoxDecoration(gradient: LinearGradient(colors: [Colors.blueAccent, Colors.lightBlueAccent])),
         child: loading
             ? loadingOverlay
-            : LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
+            : LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
                 double width = min(constraints.maxWidth, 1200);
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -148,19 +139,15 @@ class _Page extends State<Page> {
                   children: [
                     Container(
                       width: width,
-                      decoration: BoxDecoration(
-                          color: Colors.white, boxShadow: AppTheme.boxShadow),
+                      decoration: BoxDecoration(color: Colors.white, boxShadow: AppTheme.boxShadow),
                       child: ListView(
                         children: [
                           SizedBox(
-                            height: width > 600
-                                ? min(width * 9 / 16, 600)
-                                : constraints.maxHeight * .45,
+                            height: width > 600 ? min(width * 9 / 16, 600) : constraints.maxHeight * .45,
                             child: NetworkVideoPlayer(
                               url: activeSource.urls[activeEpisode].url,
                               onEnd: () {
-                                if (activeEpisode <
-                                    activeSource.urls.length - 1) {
+                                if (activeEpisode < activeSource.urls.length - 1) {
                                   setState(() {
                                     activeEpisode += 1;
                                   });
@@ -173,8 +160,7 @@ class _Page extends State<Page> {
                               child: Container(
                                 padding: const EdgeInsets.all(15),
                                 alignment: Alignment.center,
-                                child: Text(
-                                    '${videoData!.name} - ${activeSource.urls[activeEpisode].label}',
+                                child: Text('${videoData!.name} - ${activeSource.urls[activeEpisode].label}',
                                     style: const TextStyle(fontSize: 18)),
                               )),
                           DefaultTabController(
@@ -182,31 +168,29 @@ class _Page extends State<Page> {
                               child: Column(
                                 children: [
                                   TabBar.secondary(
-                                      labelColor:
-                                          Theme.of(context).primaryColor,
-                                      tabs: const [
-                                        Tab(
-                                          text: '简介',
-                                        ),
-                                        Tab(
-                                          text: '选集',
-                                        )
-                                      ]),
+                                    labelColor: Theme.of(context).primaryColor,
+                                    tabs: const [
+                                      Tab(
+                                        text: '简介',
+                                      ),
+                                      Tab(
+                                        text: '选集',
+                                      )
+                                    ],
+                                    tabAlignment: TabAlignment.center,
+                                    dividerColor: Colors.transparent,
+                                  ),
+                                  Divider(height: 1, color: Colors.grey.shade200),
                                   SizedBox(
                                     height: 400,
                                     child: TabBarView(children: [
                                       Container(
                                         padding: const EdgeInsets.all(10),
                                         child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             SizedBox(
-                                              width: min(
-                                                  150,
-                                                  width > 600
-                                                      ? width / 5
-                                                      : width * .4),
+                                              width: min(150, width > 600 ? width / 5 : width * .4),
                                               child: Image.network(
                                                 videoData!.pic,
                                                 fit: BoxFit.cover,
@@ -215,83 +199,48 @@ class _Page extends State<Page> {
                                             Expanded(
                                               child: SingleChildScrollView(
                                                 child: Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 15),
+                                                  padding: const EdgeInsets.only(left: 15),
                                                   child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(videoData!.name,
                                                           style: const TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400)),
+                                                              fontSize: 20, fontWeight: FontWeight.w400)),
                                                       Container(
-                                                        margin: const EdgeInsets
-                                                            .only(bottom: 8),
-                                                        child: Text(
-                                                            videoData!.note,
-                                                            style: const TextStyle(
+                                                        margin: const EdgeInsets.only(bottom: 8),
+                                                        child: Text(videoData!.note,
+                                                            style: TextStyle(
                                                                 fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                color: Colors
-                                                                    .black54)),
+                                                                fontWeight: FontWeight.w400,
+                                                                color: Colors.grey.shade700
+                                                            )
+                                                        ),
                                                       ),
                                                       Offstage(
-                                                        offstage: videoData!
-                                                            .subname.isEmpty,
-                                                        child: Text(
-                                                            '又名: ${videoData!.subname}',
-                                                            style: AppTheme
-                                                                .textStyle),
+                                                        offstage: videoData!.subname.isEmpty,
+                                                        child: Text('又名: ${videoData!.subname}',
+                                                            style: AppTheme.textStyle),
                                                       ),
-                                                      Text(
-                                                          '类别: ${videoData!.type}',
-                                                          style: AppTheme
-                                                              .textStyle),
-                                                      Text(
-                                                          '年份: ${videoData!.year}',
-                                                          style: AppTheme
-                                                              .textStyle),
+                                                      Text('类别: ${videoData!.type}', style: AppTheme.textStyle),
+                                                      Text('年份: ${videoData!.year}', style: AppTheme.textStyle),
                                                       Offstage(
-                                                          offstage:
-                                                              videoData!.area ==
-                                                                  null,
-                                                          child: Text(
-                                                              '地区: ${videoData!.area}',
-                                                              style: AppTheme
-                                                                  .textStyle)),
+                                                          offstage: videoData!.area == null,
+                                                          child: Text('地区: ${videoData!.area}',
+                                                              style: AppTheme.textStyle)),
                                                       Offstage(
-                                                        offstage: videoData!
-                                                                .director ==
-                                                            null,
-                                                        child: Text(
-                                                            '导演: ${videoData!.director}',
-                                                            style: AppTheme
-                                                                .textStyle),
+                                                        offstage: videoData!.director == null,
+                                                        child: Text('导演: ${videoData!.director}',
+                                                            style: AppTheme.textStyle),
                                                       ),
                                                       Offstage(
-                                                        offstage:
-                                                            videoData!.actor ==
-                                                                null,
-                                                        child: Text(
-                                                            '演员: ${videoData!.actor}',
-                                                            style: AppTheme
-                                                                .textStyle),
+                                                        offstage: videoData!.actor == null,
+                                                        child:
+                                                            Text('演员: ${videoData!.actor}', style: AppTheme.textStyle),
                                                       ),
                                                       Container(
-                                                        margin: const EdgeInsets
-                                                            .only(top: 8),
-                                                        child: Text(
-                                                            videoData!.des,
-                                                            style: AppTheme
-                                                                .textStyle,
-                                                            softWrap: true),
+                                                        margin: const EdgeInsets.only(top: 8),
+                                                        child: Text(videoData!.des,
+                                                            style: AppTheme.textStyle, softWrap: true),
                                                       )
                                                     ],
                                                   ),
@@ -304,30 +253,21 @@ class _Page extends State<Page> {
                                       Container(
                                         padding: const EdgeInsets.all(10),
                                         child: LayoutBuilder(
-                                          builder: (BuildContext context,
-                                              BoxConstraints constraints) {
+                                          builder: (BuildContext context, BoxConstraints constraints) {
                                             return Wrap(
                                               children: activeSource.urls
                                                   .asMap()
                                                   .keys
                                                   .map((int index) => Container(
-                                                      width: constraints
-                                                              .maxWidth /
-                                                          (constraints.maxWidth /
-                                                                  120)
-                                                              .floor(),
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              5),
+                                                      width:
+                                                          constraints.maxWidth / (constraints.maxWidth / 120).floor(),
+                                                      padding: const EdgeInsets.all(5),
                                                       child: ToggleButton(
-                                                        active: activeEpisode ==
-                                                            index,
-                                                        text: activeSource
-                                                            .urls[index].label,
+                                                        active: activeEpisode == index,
+                                                        text: activeSource.urls[index].label,
                                                         onPressed: () {
                                                           setState(() {
-                                                            activeEpisode =
-                                                                index;
+                                                            activeEpisode = index;
                                                           });
                                                         },
                                                       )))

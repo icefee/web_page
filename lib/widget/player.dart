@@ -89,22 +89,18 @@ class _NetworkVideoPlayer extends State<NetworkVideoPlayer> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black,
-      constraints: const BoxConstraints.expand(),
       child: Stack(
         children: <Widget>[
           VideoPlayer(_controller),
           Offstage(
             offstage: !(pending || _controller.value.isBuffering),
-            child: Container(
-              constraints: const BoxConstraints.expand(),
-              child: const Center(
-                child: SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
+            child: Center(
+              child: SizedBox(
+                width: 80,
+                height: 80,
+                child: CircularProgressIndicator(
+                  color: Colors.white.withOpacity(.8),
+                  strokeWidth: 2,
                 ),
               ),
             ),
@@ -120,7 +116,9 @@ class _NetworkVideoPlayer extends State<NetworkVideoPlayer> {
                 setState(() {});
               },
               onSeekEnd: (double value) {
-                _controller.seekTo(Duration(milliseconds: (value * _controller.value.duration.inMilliseconds).round())).then((value) {
+                _controller
+                    .seekTo(Duration(milliseconds: (value * _controller.value.duration.inMilliseconds).round()))
+                    .then((value) {
                   seeking = false;
                 });
               },
@@ -138,7 +136,9 @@ class ControlsOverlay extends StatefulWidget {
   final ValueChanged<double> onSeeking;
   final ValueChanged<double> onSeekEnd;
 
-  const ControlsOverlay({Key? key, required this.controller, required this.playState, required this.onSeeking, required this.onSeekEnd}) : super(key: key);
+  const ControlsOverlay(
+      {Key? key, required this.controller, required this.playState, required this.onSeeking, required this.onSeekEnd})
+      : super(key: key);
 
   @override
   State<ControlsOverlay> createState() => _ControlsOverlay();
@@ -166,7 +166,9 @@ class _ControlsOverlay extends State<ControlsOverlay> {
   }
 
   String get playedTime {
-    return [widget.playState.duration * widget.playState.played, widget.playState.duration].map(DateTimeParser.parseDuration).join(' / ');
+    return [widget.playState.duration * widget.playState.played, widget.playState.duration]
+        .map(DateTimeParser.parseDuration)
+        .join(' / ');
   }
 
   @override
@@ -194,7 +196,10 @@ class _ControlsOverlay extends State<ControlsOverlay> {
                 int seconds = widget.controller.value.position.inSeconds;
                 int totalSeconds = widget.controller.value.duration.inSeconds;
                 double screenWidth = MediaQuery.of(context).size.width;
-                seconds = max(0, min(seconds + (details.globalPosition.dx - originOffset) * totalSeconds ~/ screenWidth, totalSeconds));
+                seconds = max(
+                    0,
+                    min(seconds + (details.globalPosition.dx - originOffset) * totalSeconds ~/ screenWidth,
+                        totalSeconds));
                 widget.controller.seekTo(Duration(seconds: seconds));
                 originOffset = details.globalPosition.dx;
               }
@@ -208,7 +213,7 @@ class _ControlsOverlay extends State<ControlsOverlay> {
                 colors: [controlsVisible ? Colors.black54 : Colors.transparent, Colors.transparent],
                 stops: const [.2, .75],
               )),
-              duration: const Duration(milliseconds: 200),
+              duration: AppTheme.transitionDuration,
             ),
           ),
           AnimatedOpacity(
@@ -254,13 +259,12 @@ class _ControlsOverlay extends State<ControlsOverlay> {
           AnimatedOpacity(
             opacity: controlsVisible ? 1 : 0,
             duration: AppTheme.transitionDuration,
-            child: Align(
-              alignment: Alignment.center,
+            child: Center(
               child: IconButton(
                   onPressed: _togglePlay,
                   icon: Icon(
                     widget.controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                    color: Colors.white,
+                    color: Colors.white.withOpacity(.8),
                     size: 56,
                   )),
             ),

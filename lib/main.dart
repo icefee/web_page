@@ -212,9 +212,7 @@ class _Page extends State<Page> {
                                                             style: TextStyle(
                                                                 fontSize: 16,
                                                                 fontWeight: FontWeight.w400,
-                                                                color: Colors.grey.shade700
-                                                            )
-                                                        ),
+                                                                color: Colors.grey.shade700)),
                                                       ),
                                                       Offstage(
                                                         offstage: videoData!.subname.isEmpty,

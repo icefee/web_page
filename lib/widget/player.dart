@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:web_page/tool/theme.dart';
 import 'dart:math' show min, max;
+import '../tool/theme.dart';
 import '../tool/parser.dart';
 import '../tool/type.dart';
 
@@ -105,25 +105,31 @@ class _NetworkVideoPlayer extends State<NetworkVideoPlayer> {
               ),
             ),
           ),
-          Offstage(
-            offstage: failed,
-            child: ControlsOverlay(
-              controller: _controller,
-              playState: playState,
-              onSeeking: (double value) {
-                playState.played = value;
-                seeking = true;
-                setState(() {});
-              },
-              onSeekEnd: (double value) {
-                _controller
-                    .seekTo(Duration(milliseconds: (value * _controller.value.duration.inMilliseconds).round()))
-                    .then((value) {
-                  seeking = false;
-                });
-              },
-            ),
-          ),
+          failed
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const Icon(Icons.warning_amber, color: Colors.orange),
+                    const SizedBox(width: 5),
+                    Text('视频加载失败', style: TextStyle(color: Colors.white, fontSize: AppTheme.fontSize))
+                  ],
+                )
+              : ControlsOverlay(
+                  controller: _controller,
+                  playState: playState,
+                  onSeeking: (double value) {
+                    playState.played = value;
+                    seeking = true;
+                    setState(() {});
+                  },
+                  onSeekEnd: (double value) {
+                    _controller
+                        .seekTo(Duration(milliseconds: (value * _controller.value.duration.inMilliseconds).round()))
+                        .then((value) {
+                      seeking = false;
+                    });
+                  },
+                ),
         ],
       ),
     );
@@ -214,21 +220,36 @@ class _ControlsOverlay extends State<ControlsOverlay> {
                 stops: const [.2, .75],
               )),
               duration: AppTheme.transitionDuration,
+              child: AnimatedOpacity(
+                opacity: controlsVisible ? 1 : 0,
+                duration: AppTheme.transitionDuration,
+                child: Center(
+                  child: IconButton(
+                      onPressed: controlsVisible ? _togglePlay : null,
+                      icon: Icon(
+                        widget.controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                        color: Colors.white.withOpacity(.8),
+                        size: 56,
+                      )),
+                ),
+              ),
             ),
           ),
-          AnimatedOpacity(
-            opacity: controlsVisible ? 1 : 0,
+          AnimatedPositioned(
             duration: AppTheme.transitionDuration,
-            curve: Curves.easeInOut,
+            left: 0,
+            right: 0,
+            bottom: controlsVisible ? 0 : -100,
+            curve: Curves.linearToEaseOut,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 Slider.adaptive(
-                  value: widget.playState.played,
-                  secondaryTrackValue: widget.playState.buffered,
-                  onChanged: widget.onSeeking,
-                  onChangeEnd: widget.onSeekEnd,
-                ),
+                    value: widget.playState.played,
+                    secondaryTrackValue: widget.playState.buffered,
+                    onChanged: widget.onSeeking,
+                    onChangeEnd: widget.onSeekEnd,
+                    secondaryActiveColor: Colors.white60,
+                    inactiveColor: Colors.white30),
                 Container(
                   padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
                   child: Row(
@@ -254,19 +275,6 @@ class _ControlsOverlay extends State<ControlsOverlay> {
                   ),
                 )
               ],
-            ),
-          ),
-          AnimatedOpacity(
-            opacity: controlsVisible ? 1 : 0,
-            duration: AppTheme.transitionDuration,
-            child: Center(
-              child: IconButton(
-                  onPressed: _togglePlay,
-                  icon: Icon(
-                    widget.controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                    color: Colors.white.withOpacity(.8),
-                    size: 56,
-                  )),
             ),
           )
         ],

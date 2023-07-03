@@ -29,14 +29,16 @@ class VideoData {
   String? lang;
   late String last;
   late dynamic state;
-  VideoData(this.tid, this.name, this.note, this.subname, this.pic, this.type, this.year, this.dataList, this.des, this.last, this.state, {this.actor, this.area, this.director, this.lang});
+  VideoData(this.tid, this.name, this.note, this.subname, this.pic, this.type, this.year, this.dataList, this.des,
+      this.last, this.state,
+      {this.actor, this.area, this.director, this.lang});
 
   factory VideoData.fromMap(Map map) {
     return VideoData(
       map['tid'],
       map['name'],
       map['note'],
-      map['subname'],
+      map['subname'] ?? '',
       map['pic'],
       map['type'],
       map['year'],

@@ -31,7 +31,14 @@ class _VideoUrlParser extends State<VideoUrlParser> {
               constraints: const BoxConstraints.expand(),
               color: Colors.black,
               child: Center(
-                child: Text('播放地址解析中..', style: TextStyle(color: Colors.white, fontSize: AppTheme.fontSize)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.lightbulb, color: Theme.of(context).primaryColor),
+                    const SizedBox(width: 5),
+                    Text('播放地址解析中..', style: TextStyle(color: Colors.white, fontSize: AppTheme.fontSize))
+                  ],
+                ),
               ),
             );
           }

@@ -269,7 +269,7 @@ class _ControlsOverlay extends State<ControlsOverlay> {
                           ),
                           Container(
                             margin: const EdgeInsets.only(left: 10),
-                            child: Text(playedTime, style: const TextStyle(color: Colors.white, fontSize: 16.0)),
+                            child: Text(playedTime, style: TextStyle(color: Colors.white, fontSize: AppTheme.fontSize)),
                           )
                         ],
                       )

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:html';
 import 'dart:math' show min;
+import './widget/video_url_parser.dart';
 import './widget/player.dart';
 import './widget/toggle_button.dart';
 import './tool/theme.dart';
@@ -144,15 +145,18 @@ class _Page extends State<Page> {
                         children: [
                           SizedBox(
                             height: width > 600 ? min(width * 9 / 16, 600) : constraints.maxHeight * .45,
-                            child: NetworkVideoPlayer(
+                            child: VideoUrlParser(
                               url: activeSource.urls[activeEpisode].url,
-                              onEnd: () {
-                                if (activeEpisode < activeSource.urls.length - 1) {
-                                  setState(() {
-                                    activeEpisode += 1;
-                                  });
-                                }
-                              },
+                              childBuilder: (String url) => NetworkVideoPlayer(
+                                url: url,
+                                onEnd: () {
+                                  if (activeEpisode < activeSource.urls.length - 1) {
+                                    setState(() {
+                                      activeEpisode += 1;
+                                    });
+                                  }
+                                },
+                              ),
                             ),
                           ),
                           Offstage(

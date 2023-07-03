@@ -30,4 +30,15 @@ class Http {
     }
     return null;
   }
+
+  static Future<String?> parseVideoUrl(String url) async {
+    Map? jsonMap = await getJson('$apiServer/api/video/parse?url=$url');
+    if (jsonMap != null) {
+      ApiResponse<String> response = ApiResponse.fromMap<String>(jsonMap);
+      if (response.code == 0) {
+        return response.data;
+      }
+    }
+    return null;
+  }
 }

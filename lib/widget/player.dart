@@ -106,13 +106,15 @@ class _NetworkVideoPlayer extends State<NetworkVideoPlayer> {
             ),
           ),
           failed
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const Icon(Icons.warning_amber, color: Colors.orange),
-                    const SizedBox(width: 5),
-                    Text('视频加载失败', style: TextStyle(color: Colors.white, fontSize: AppTheme.fontSize))
-                  ],
+              ? Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const Icon(Icons.warning_amber, color: Colors.orange),
+                      const SizedBox(width: 5),
+                      Text('视频加载失败', style: TextStyle(color: Colors.white, fontSize: AppTheme.fontSize))
+                    ],
+                  ),
                 )
               : ControlsOverlay(
                   controller: _controller,
@@ -251,7 +253,7 @@ class _ControlsOverlay extends State<ControlsOverlay> {
                     secondaryActiveColor: Colors.white60,
                     inactiveColor: Colors.white30),
                 Container(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -266,7 +268,7 @@ class _ControlsOverlay extends State<ControlsOverlay> {
                             ),
                           ),
                           Container(
-                            margin: const EdgeInsets.only(left: 5.0),
+                            margin: const EdgeInsets.only(left: 10),
                             child: Text(playedTime, style: const TextStyle(color: Colors.white, fontSize: 16.0)),
                           )
                         ],

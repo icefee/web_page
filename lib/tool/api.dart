@@ -19,26 +19,27 @@ class Http {
     }
   }
 
-  static Future<VideoData?> getVideoData(String id) async {
-    Map? jsonMap = await getJson('$apiServer/api/video/$id');
-    if (jsonMap != null) {
-      ApiResponse<Map> response = ApiResponse.fromMap<Map>(jsonMap);
-      if (response.code == 0) {
-        VideoData data = VideoData.fromMap(response.data);
-        return data;
+  static Future<T?> getApiJson<T>(String url) async {
+    try {
+      Map? jsonMap = await getJson(url);
+      if (jsonMap == null) {
+        throw 'network error';
       }
+      ApiResponse<T> result = ApiResponse.fromMap<T>(jsonMap);
+      if (result.code == 0) {
+        return result.data;
+      } else {
+        throw result.msg;
+      }
+    } catch (err) {
+      return null;
     }
-    return null;
   }
 
-  static Future<String?> parseVideoUrl(String url) async {
-    Map? jsonMap = await getJson('$apiServer/api/video/parse?url=$url');
-    if (jsonMap != null) {
-      ApiResponse<String> response = ApiResponse.fromMap<String>(jsonMap);
-      if (response.code == 0) {
-        return response.data;
-      }
-    }
-    return null;
+  static Future<VideoData?> getVideoData(String id) async {
+    Map? data = await getApiJson<Map>('$apiServer/api/video/$id');
+    return data != null ? VideoData.fromMap(data) : null;
   }
+
+  static Future<String?> parseVideoUrl(String url) => getApiJson<String>('$apiServer/api/video/parse?url=$url');
 }

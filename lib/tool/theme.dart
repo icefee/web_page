@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 abstract class AppTheme {
-  static List<BoxShadow> boxShadow = const [BoxShadow(color: Colors.black26, offset: Offset(3, 3), blurRadius: 10)];
+  static List<BoxShadow> boxShadow = const [BoxShadow(color: Colors.black26, offset: Offset(2, 2), blurRadius: 10)];
 
   static BorderRadiusGeometry borderRadius = BorderRadius.circular(4);
 

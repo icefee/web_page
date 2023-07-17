@@ -256,24 +256,26 @@ class _Page extends State<Page> {
                                         padding: const EdgeInsets.all(10),
                                         child: LayoutBuilder(
                                           builder: (BuildContext context, BoxConstraints constraints) {
-                                            return Wrap(
-                                              children: activeSource.urls
-                                                  .asMap()
-                                                  .keys
-                                                  .map((int index) => Container(
-                                                      width:
-                                                          constraints.maxWidth / (constraints.maxWidth / 120).floor(),
-                                                      padding: const EdgeInsets.all(5),
-                                                      child: ToggleButton(
-                                                        active: activeEpisode == index,
-                                                        text: activeSource.urls[index].label,
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            activeEpisode = index;
-                                                          });
-                                                        },
-                                                      )))
-                                                  .toList(),
+                                            return SingleChildScrollView(
+                                              child: Wrap(
+                                                children: activeSource.urls
+                                                    .asMap()
+                                                    .keys
+                                                    .map((int index) => Container(
+                                                        width:
+                                                            constraints.maxWidth / (constraints.maxWidth / 120).floor(),
+                                                        padding: const EdgeInsets.all(5),
+                                                        child: ToggleButton(
+                                                          active: activeEpisode == index,
+                                                          text: activeSource.urls[index].label,
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              activeEpisode = index;
+                                                            });
+                                                          },
+                                                        )))
+                                                    .toList(),
+                                              ),
                                             );
                                           },
                                         ),

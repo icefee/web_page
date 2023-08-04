@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:html';
-import 'dart:math' show min;
+import 'dart:math' show min, pi;
 import './widget/video_url_parser.dart';
 import './widget/player.dart';
+import './widget/profile.dart';
 import './widget/toggle_button.dart';
 import './tool/theme.dart';
 import './tool/api.dart';
@@ -106,6 +107,8 @@ class _Page extends State<Page> {
 
   VideoSource get activeSource => videoData!.dataList.first;
 
+  List<VideoItem> get urls => activeSource.urls;
+
   Widget get loadingOverlay {
     return Center(
       child: Container(
@@ -116,10 +119,59 @@ class _Page extends State<Page> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [const CircularProgressIndicator(), Text('加载中...', style: TextStyle(fontSize: AppTheme.fontSize))],
+          children: [
+            const CircularProgressIndicator(strokeWidth: 3),
+            Text('加载中...', style: TextStyle(fontSize: AppTheme.fontSize))
+          ],
         ),
       ),
     );
+  }
+
+  List<Tab> get tabs {
+    return const [
+      Tab(
+        text: '简介',
+      ),
+      Tab(
+        text: '选集',
+      )
+    ];
+  }
+
+  Widget get tabBar {
+    return TabBar.secondary(
+      labelColor: Theme.of(context).primaryColor,
+      tabs: tabs,
+      tabAlignment: TabAlignment.center,
+      dividerColor: Colors.transparent,
+    );
+  }
+
+  Widget container(Widget child, {required double width}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          width: width,
+          decoration: BoxDecoration(color: Colors.white, boxShadow: AppTheme.boxShadow),
+          child: child,
+        )
+      ],
+    );
+  }
+
+  Widget get divider {
+    return Divider(height: 1, color: Colors.grey.shade200);
+  }
+
+  Widget withTabView(Widget child) {
+    return DefaultTabController(
+        length: tabs.length,
+        child: Column(
+          children: <Widget>[tabBar, divider, child],
+        ));
   }
 
   @override
@@ -129,166 +181,73 @@ class _Page extends State<Page> {
     return Scaffold(
       body: Container(
         constraints: const BoxConstraints.expand(),
-        decoration: const BoxDecoration(gradient: LinearGradient(colors: [Colors.blueAccent, Colors.lightBlueAccent])),
+        decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                colors: [Colors.blueAccent, Colors.lightBlueAccent], transform: GradientRotation(pi / 4))),
         child: loading
             ? loadingOverlay
             : LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-                double width = min(constraints.maxWidth, 1200);
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Container(
-                      width: width,
-                      decoration: BoxDecoration(color: Colors.white, boxShadow: AppTheme.boxShadow),
-                      child: ListView(
-                        children: [
-                          SizedBox(
-                            height: width > 600 ? min(width * 9 / 16, 600) : constraints.maxHeight * .45,
-                            child: VideoUrlParser(
-                              url: activeSource.urls[activeEpisode].url,
-                              childBuilder: (String url) => NetworkVideoPlayer(
-                                url: url,
-                                onEnd: () {
-                                  if (activeEpisode < activeSource.urls.length - 1) {
-                                    setState(() {
-                                      activeEpisode += 1;
-                                    });
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                          Offstage(
-                              offstage: activeSource.urls.length <= 1,
-                              child: Container(
-                                padding: const EdgeInsets.all(15),
-                                alignment: Alignment.center,
-                                child: Text('${videoData!.name} - ${activeSource.urls[activeEpisode].label}',
-                                    style: const TextStyle(fontSize: 18)),
-                              )),
-                          DefaultTabController(
-                              length: 2,
-                              child: Column(
-                                children: [
-                                  TabBar.secondary(
-                                    labelColor: Theme.of(context).primaryColor,
-                                    tabs: const [
-                                      Tab(
-                                        text: '简介',
-                                      ),
-                                      Tab(
-                                        text: '选集',
-                                      )
-                                    ],
-                                    tabAlignment: TabAlignment.center,
-                                    dividerColor: Colors.transparent,
-                                  ),
-                                  Divider(height: 1, color: Colors.grey.shade200),
-                                  SizedBox(
-                                    height: 400,
-                                    child: TabBarView(children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              width: min(150, width > 600 ? width / 5 : width * .4),
-                                              child: Image.network(
-                                                videoData!.pic,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: SingleChildScrollView(
-                                                child: Container(
-                                                  padding: const EdgeInsets.only(left: 15),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(videoData!.name,
-                                                          style: const TextStyle(
-                                                              fontSize: 20, fontWeight: FontWeight.w400)),
-                                                      Container(
-                                                        margin: const EdgeInsets.only(bottom: 8),
-                                                        child: Text(videoData!.note,
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight: FontWeight.w400,
-                                                                color: Colors.grey.shade700)),
-                                                      ),
-                                                      Offstage(
-                                                        offstage: videoData!.subname.isEmpty,
-                                                        child: Text('又名: ${videoData!.subname}',
-                                                            style: AppTheme.textStyle),
-                                                      ),
-                                                      Text('类别: ${videoData!.type}', style: AppTheme.textStyle),
-                                                      Text('年份: ${videoData!.year}', style: AppTheme.textStyle),
-                                                      Offstage(
-                                                          offstage: videoData!.area == null,
-                                                          child: Text('地区: ${videoData!.area}',
-                                                              style: AppTheme.textStyle)),
-                                                      Offstage(
-                                                        offstage: videoData!.director == null,
-                                                        child: Text('导演: ${videoData!.director}',
-                                                            style: AppTheme.textStyle),
-                                                      ),
-                                                      Offstage(
-                                                        offstage: videoData!.actor == null,
-                                                        child:
-                                                            Text('演员: ${videoData!.actor}', style: AppTheme.textStyle),
-                                                      ),
-                                                      Container(
-                                                        margin: const EdgeInsets.only(top: 8),
-                                                        child: Text(videoData!.des,
-                                                            style: AppTheme.textStyle, softWrap: true),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.all(10),
-                                        child: LayoutBuilder(
-                                          builder: (BuildContext context, BoxConstraints constraints) {
-                                            return SingleChildScrollView(
-                                              child: Wrap(
-                                                children: activeSource.urls
-                                                    .asMap()
-                                                    .keys
-                                                    .map((int index) => Container(
-                                                        width:
-                                                            constraints.maxWidth / (constraints.maxWidth / 120).floor(),
-                                                        padding: const EdgeInsets.all(5),
-                                                        child: ToggleButton(
-                                                          active: activeEpisode == index,
-                                                          text: activeSource.urls[index].label,
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              activeEpisode = index;
-                                                            });
-                                                          },
-                                                        )))
-                                                    .toList(),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      )
-                                    ]),
-                                  )
-                                ],
-                              ))
-                        ],
-                      ),
-                    )
-                  ],
+                double width = min(constraints.maxWidth, 1024);
+                Widget player = SizedBox(
+                  height: width > 600 ? min(width * 10 / 16, 500) : constraints.maxHeight * .45,
+                  child: VideoUrlParser(
+                    url: urls[activeEpisode].url,
+                    childBuilder: (String url) => NetworkVideoPlayer(
+                      url: url,
+                      onEnd: () {
+                        if (activeEpisode < urls.length - 1) {
+                          setState(() {
+                            activeEpisode += 1;
+                          });
+                        }
+                      },
+                    ),
+                  ),
                 );
+                Widget playStatus = Offstage(
+                    offstage: urls.length <= 1,
+                    child: Container(
+                      padding: const EdgeInsets.all(15),
+                      alignment: Alignment.center,
+                      child: Text('${videoData!.name} - ${urls[activeEpisode].label}',
+                          style: const TextStyle(fontSize: 18)),
+                    ));
+                Widget tabView = TabBarView(children: <Widget>[
+                  Profile(video: videoData!),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: LayoutBuilder(
+                        builder: (BuildContext context, BoxConstraints constraints) => SingleChildScrollView(
+                              child: Wrap(
+                                children: urls
+                                    .asMap()
+                                    .keys
+                                    .map((int index) => Container(
+                                        width: constraints.maxWidth / (constraints.maxWidth / 120).floor(),
+                                        padding: const EdgeInsets.all(5),
+                                        child: ToggleButton(
+                                          active: activeEpisode == index,
+                                          text: urls[index].label,
+                                          onPressed: () {
+                                            setState(() {
+                                              activeEpisode = index;
+                                            });
+                                          },
+                                        )))
+                                    .toList(),
+                              ),
+                            )),
+                  )
+                ]);
+                return container(
+                    width > 600
+                        ? ListView(
+                            children: [player, playStatus, withTabView(SizedBox(height: 400, child: tabView))],
+                          )
+                        : Column(
+                            children: [player, playStatus, Expanded(child: withTabView(Expanded(child: tabView)))],
+                          ),
+                    width: width);
               }),
       ),
     );
